@@ -10,12 +10,10 @@ This repository contains projects I built while studying Computer Science at San
 - University: San Francisco State University
 - Graduation: 2027
 
----
 
 # Projects
 
 ## 1. Video Sharing App
-
 A full-stack web application inspired by YouTube where users can upload and interact with videos.
 
 ### Features
@@ -36,7 +34,6 @@ A full-stack web application inspired by YouTube where users can upload and inte
 ### Project Folder
 `csc317-code-sahilanxnd`
 
----
 
 # Contact
 
