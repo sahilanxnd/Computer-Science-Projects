@@ -8,7 +8,7 @@ This repository contains projects I built while studying Computer Science at San
 - Name: Sahil Anand
 - Major: Computer Science
 - University: San Francisco State University
-- Graduation: 2027
+- Graduation: SP 2027
 
 
 # Projects
