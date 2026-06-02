@@ -1,0 +1,24 @@
+<main>
+  <h2>Search results for "{{searchTerm}}"</h2>
+
+  {{#if messages.error}}
+  <div class="alert alert-danger">
+    {{#each messages.error}}<p>{{this}}</p>{{/each}}
+  </div>
+  {{/if}}
+
+  {{#if posts.length}}
+  <div class="container">
+    {{#each posts}}
+    <div class="product-card">
+      <a href="/posts/{{post_id}}">
+        <img src="/public/{{thumbnail}}" alt="{{title}}" class="product-img" />
+        <p class="product-title">{{title}}</p>
+      </a>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <p>No posts matched your search.</p>
+  {{/if}}
+</main>

@@ -1,0 +1,54 @@
+<main>
+  <section class="form-section">
+    <header>
+      <h2>Create account</h2>
+    </header>
+
+    {{#if messages.error}}
+    <div class="alert alert-danger">
+      {{#each messages.error}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    {{#if messages.success}}
+    <div class="alert alert-success">
+      {{#each messages.success}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    <form id="reg-form" action="/users/registration" method="POST" enctype="application/x-www-form-urlencoded">
+      <label for="Username">Username</label>
+      <input type="text" name="username" id="Username" required placeholder="Choose a username">
+
+      <label for="Email">Email</label>
+      <input type="email" name="email" id="Email" required placeholder="Your email address">
+
+      <label for="Password">Password</label>
+      <input type="password" name="password" id="Password" required placeholder="Create a password">
+
+      <label for="ConfirmPassword">Confirm Password</label>
+      <input type="password" name="cpassword" id="ConfirmPassword" required placeholder="Repeat your password">
+
+      <div id="password-rules" style="display:none;"></div>
+
+      <label>
+        <input type="checkbox" required>
+        I confirm I am 13 years of age or older
+      </label>
+
+      <label>
+        <input type="checkbox" required>
+        I agree to the <a href="https://accept.com" target="_blank">Terms of Service and Privacy Policy</a>
+      </label>
+
+      <div class="form-buttons">
+        <button id="submitBtn" type="submit" class="btn-submit">Register</button>
+        <button type="reset" class="btn-reset">Clear</button>
+      </div>
+    </form>
+
+    <p style="text-align:center; margin-top:20px; color:var(--text-muted); font-size:0.9rem;">
+      Already have an account? <a href="/users/login" style="color:var(--accent);">Login here</a>
+    </p>
+  </section>
+</main>

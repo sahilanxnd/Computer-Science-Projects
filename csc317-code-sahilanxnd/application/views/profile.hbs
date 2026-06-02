@@ -1,0 +1,50 @@
+<main>
+  <div class="profile-page">
+
+    {{#if messages.success}}
+    <div class="alert alert-success">
+      {{#each messages.success}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    {{#if messages.error}}
+    <div class="alert alert-danger">
+      {{#each messages.error}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    <div class="profile-card">
+      <div class="profile-avatar">{{user.username.[0]}}</div>
+      <div class="profile-info">
+        <h2>{{user.username}}</h2>
+        <p>📧 {{user.email}}</p>
+      </div>
+    </div>
+
+    <p class="section-heading">Your Posts</p>
+
+    {{#if posts.length}}
+    <div class="profile-posts-grid">
+      {{#each posts}}
+      <div class="profile-post-card">
+        <p class="profile-post-title">{{this.title}}</p>
+        <div class="profile-post-actions">
+          <a href="/posts/{{this.post_id}}" class="btn-view">View</a>
+          <form action="/posts/{{this.post_id}}/delete" method="POST" style="margin:0;">
+            <button type="submit" class="btn-delete" onclick="return confirm('Delete this post?')">Delete</button>
+          </form>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>You haven't posted anything yet.</p>
+      <a href="/posts/postvideo">Upload your first video</a>
+    </div>
+    {{/if}}
+
+    <a href="/" class="back-link">← Back to Home</a>
+  </div>
+</main>

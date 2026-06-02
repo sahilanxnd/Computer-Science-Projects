@@ -1,0 +1,36 @@
+<main>
+  <section class="form-section">
+    <header>
+      <h2>Welcome back</h2>
+    </header>
+
+    {{#if messages.error}}
+    <div class="alert alert-danger">
+      {{#each messages.error}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    {{#if messages.success}}
+    <div class="alert alert-success">
+      {{#each messages.success}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    <form action="/users/login" method="POST">
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" required placeholder="Enter your username">
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required placeholder="Enter your password">
+
+      <div class="form-buttons">
+        <button type="submit" class="btn-submit">Login</button>
+        <button type="reset" class="btn-reset">Clear</button>
+      </div>
+    </form>
+
+    <p style="text-align:center; margin-top:20px; color:var(--text-muted); font-size:0.9rem;">
+      Don't have an account? <a href="/users/registration" style="color:var(--accent);">Register here</a>
+    </p>
+  </section>
+</main>

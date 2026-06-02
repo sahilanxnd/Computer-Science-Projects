@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>postvideo</title>
+</head>
+
+<body>
+    <header>
+        <h1>
+            Post Video Page
+        </h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a href="login.html">Login</a>
+            </li>
+            <li>
+                <a href="registration.html">Register</a>
+            </li>
+            <li>
+                <a href="postvideo.html">Post</a>
+            </li>
+            <li>
+                <a href="viewpost.html">View Post</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <section class="form-section">
+
+            <header>
+                <h2>
+                    Upload your video
+                </h2>
+            </header>
+
+            <form>
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" required placeholder="Title">
+
+                <label for="Description">Description</label>
+                <input type="text" name="Description" id="Description" required placeholder="Description">
+
+                <label for="upload" class="file-upload">Choose Video</label>
+                <input type="file" name="upload" id="upload" class="hidden-input" accept="video/*">
+
+                <label>
+                    <input type="checkbox">
+                    <a href="https:accept.com">Accept use policy for uploading videos
+                    </a>
+                </label>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit">Submit</button>
+                    <button type="reset" class="btn-reset">Clear</button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Sahil Anand &copy;2025
+    </footer>
+
+</body>
+
+</html>

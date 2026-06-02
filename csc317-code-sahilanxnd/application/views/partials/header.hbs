@@ -1,0 +1,27 @@
+<header>
+  <h1>
+    {{title}}
+  </h1>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="/">Home</a></li>
+
+    {{#if user}}
+    <li><a href="/users/profile">Profile</a></li>
+    <li><a href="/users/logout">Logout</a></li>
+    {{else}}
+    <li><a href="/users/login">Login</a></li>
+    <li><a href="/users/registration">Register</a></li>
+    {{/if}}
+
+    <li><a href="/posts/postvideo">Post</a></li>
+    <li><a href="/viewpost">View Post</a></li>
+  </ul>
+
+  <form action="/posts/search" method="GET" class="nav-search-form">
+    <input type="text" name="query" placeholder="Search videos..." required />
+    <button type="submit">Search</button>
+  </form>
+</nav>

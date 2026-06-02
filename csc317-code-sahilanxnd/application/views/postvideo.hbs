@@ -1,0 +1,28 @@
+<main>
+  <section class="form-section">
+    <header>
+      <h2>Upload a Video</h2>
+    </header>
+
+    <form action="/posts/postvideo" method="POST" enctype="multipart/form-data">
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" required placeholder="Give your video a title">
+
+      <label for="description">Description</label>
+      <input type="text" name="description" id="description" required placeholder="What's this video about?">
+
+      <label for="video">Choose Video File</label>
+      <input type="file" name="video" id="video" accept="video/*" required>
+
+      <label>
+        <input type="checkbox" required>
+        I agree to the <a href="https://accept.com" target="_blank">upload policy</a>
+      </label>
+
+      <div class="form-buttons">
+        <button type="submit" class="btn-submit">Upload</button>
+        <button type="reset" class="btn-reset">Clear</button>
+      </div>
+    </form>
+  </section>
+</main>

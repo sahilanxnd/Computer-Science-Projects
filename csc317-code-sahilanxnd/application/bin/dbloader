@@ -1,0 +1,152 @@
+require('dotenv').config();
+"use strict";
+
+const mysql = require("mysql2/promise");
+
+function displayWarningMessage(warning) {
+  switch (warning.Code) {
+    case 1007:
+      console.log(`Skipping Database Creation --> ${warning.Message}`);
+      break;
+    case 1050:
+      console.log(`Skipping Table Creation --> ${warning.Message}`);
+      break;
+  }
+}
+
+async function getConnection() {
+  return await mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    multipleStatements: true
+  });
+}
+
+async function makeDatabase(connection) {
+  const [result] = await connection.query(
+    `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`
+  );
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Database!");
+  }
+}
+
+async function makeUsersTable(connection) {
+  const [result] = await connection.query(`
+    CREATE TABLE IF NOT EXISTS user (
+      user_id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(50) NOT NULL UNIQUE,
+      email VARCHAR(100) NOT NULL UNIQUE,
+      password_hash VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Users Table!");
+  }
+}
+
+async function makePostsTable(connection) {
+  const [result] = await connection.query(`
+    CREATE TABLE IF NOT EXISTS post (
+      post_id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+      title VARCHAR(255) DEFAULT NULL,
+      description TEXT,
+      thumbnail VARCHAR(255) DEFAULT NULL,
+      FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    );
+  `);
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Posts Table!");
+  }
+}
+
+async function makeCommentsTable(connection) {
+  const [result] = await connection.query(`
+    CREATE TABLE IF NOT EXISTS comment (
+      comment_id INT NOT NULL AUTO_INCREMENT,
+      post_id INT NOT NULL,
+      user_id INT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (comment_id),
+      FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+    );
+  `);
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Comments Table!");
+  }
+}
+
+async function makeLikesTable(connection) {
+  const [result] = await connection.query(`
+    CREATE TABLE IF NOT EXISTS likes (
+      likes_id INT NOT NULL AUTO_INCREMENT,
+      user_id INT DEFAULT NULL,
+      post_id INT DEFAULT NULL,
+      created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (likes_id),
+      UNIQUE KEY unique_like (user_id, post_id),
+      FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+      FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE
+    );
+  `);
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Likes Table!");
+  }
+}
+
+async function makeSessionsTable(connection) {
+  const [result] = await connection.query(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      session_id VARCHAR(128) NOT NULL PRIMARY KEY,
+      expires INT(11) UNSIGNED NOT NULL,
+      data TEXT
+    );
+  `);
+  if (result.warningStatus > 0) {
+    const [warnings] = await connection.query("SHOW WARNINGS");
+    displayWarningMessage(warnings[0]);
+  } else {
+    console.log("✅ Created Sessions Table!");
+  }
+}
+
+(async function main() {
+  let connection = null;
+  try {
+    connection = await getConnection();
+    await makeDatabase(connection);
+    await connection.query(`USE ${process.env.DB_NAME};`);
+    await makeUsersTable(connection);
+    await makePostsTable(connection);
+    await makeCommentsTable(connection);
+    await makeLikesTable(connection);
+    await makeSessionsTable(connection);
+    await connection.end();
+    console.log("🎉 Database setup complete.");
+  } catch (err) {
+    console.error("❌ Setup failed:", err.message);
+    if (connection) await connection.end();
+  }
+})();
