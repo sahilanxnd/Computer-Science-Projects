@@ -3,7 +3,12 @@ const pathToFFMPEG = require("ffmpeg-static");
 const { promisify } = require("util");
 const exec = promisify(require("child_process").exec);
 const fs = require("fs");
-const { isProductionServerless, thumbnailDir, thumbnailPublicPrefix } = require("../conf/paths");
+const {
+  isProductionServerless,
+  thumbnailDir,
+  thumbnailPublicPrefix,
+} = require("../conf/paths");
+const { PLACEHOLDER_THUMB } = require("../conf/storage");
 
 module.exports = {
   makeThumbnail: async function (req, res, next) {
@@ -13,24 +18,24 @@ module.exports = {
     }
 
     if (isProductionServerless) {
+      req.file.thumbnail = PLACEHOLDER_THUMB;
       return next();
     }
 
     try {
       const baseName = req.file.filename.split(".")[0];
       const outputPath = path.join(thumbnailDir, `thumbnail-${baseName}.png`);
-      // Generate a thumbnail from the uploaded video
-      const thumbnailCommand = `"${pathToFFMPEG}" -ss 00:00:01 -i "${req.file.path}" -frames:v 1 -s 200x200 "${outputPath}"`;
+      const inputPath = req.file.path;
 
-
+      const thumbnailCommand = `"${pathToFFMPEG}" -ss 00:00:01 -i "${inputPath}" -frames:v 1 -s 200x200 "${outputPath}"`;
       await exec(thumbnailCommand);
 
       req.file.thumbnail = `${thumbnailPublicPrefix}/thumbnail-${baseName}.png`;
       next();
     } catch (error) {
       console.error("Thumbnail generation failed:", error.message);
-      req.file.thumbnail = `${thumbnailPublicPrefix}/placeholder-thumbnail.png`;
+      req.file.thumbnail = PLACEHOLDER_THUMB;
       next();
     }
-  }
+  },
 };

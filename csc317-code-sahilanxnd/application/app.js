@@ -27,7 +27,16 @@ app.engine(
     partialsDir: path.join(__dirname, "views/partials"), // where to look for partials
     extname: ".hbs", //expected file extension for handlebars files
     defaultLayout: "layout", //default layout for app, general template for all pages in app
-    helpers: {}, //adding new helpers to handlebars for extra functionality
+    helpers: {
+      mediaSrc: function (value) {
+        if (!value) return "";
+        if (String(value).startsWith("http://") || String(value).startsWith("https://")) {
+          return value;
+        }
+        const cleaned = String(value).replace(/^\/?public\//, "");
+        return `/public/${cleaned}`;
+      },
+    },
   })
 );
 

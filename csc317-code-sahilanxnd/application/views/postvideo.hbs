@@ -4,6 +4,18 @@
       <h2>Upload a Video</h2>
     </header>
 
+    {{#if messages.success}}
+    <div class="alert alert-success">
+      {{#each messages.success}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
+    {{#if messages.error}}
+    <div class="alert alert-danger">
+      {{#each messages.error}}<p>{{this}}</p>{{/each}}
+    </div>
+    {{/if}}
+
     <form action="/posts/postvideo" method="POST" enctype="multipart/form-data">
       <label for="title">Title</label>
       <input type="text" name="title" id="title" required placeholder="Give your video a title">

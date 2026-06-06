@@ -29,7 +29,7 @@
     <div class="video-card">
       <a href="/posts/{{post_id}}">
         {{#if thumbnail}}
-        <img src="/public/{{thumbnail}}" alt="{{title}}" class="video-card-thumb">
+        <img src="{{mediaSrc thumbnail}}" alt="{{title}}" class="video-card-thumb">
         {{else}}
         <div class="video-card-thumb-placeholder">▶</div>
         {{/if}}

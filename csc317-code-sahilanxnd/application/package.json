@@ -9,6 +9,7 @@
     "build": "echo \"No build step — Express runs as a serverless function\""
   },
   "dependencies": {
+    "@vercel/blob": "^2.4.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",

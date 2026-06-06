@@ -5,19 +5,26 @@ const multer = require('multer');
 const path = require('path');
 const { makeThumbnail } = require('../middleware/thumbnail');
 const { isProductionServerless, videoDir } = require('../conf/paths');
+const { persistVideo, persistThumbnail } = require('../conf/storage');
 
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, videoDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
-    cb(null, uniqueName);
-  }
+const storage = isProductionServerless
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, videoDir);
+      },
+      filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
+        cb(null, uniqueName);
+      }
+    });
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 100 * 1024 * 1024 }
 });
-const upload = multer({ storage });
 
 router.get('/postvideo', (req, res) => {
   if (!req.session.user) {
@@ -32,41 +39,34 @@ router.get('/postvideo', (req, res) => {
 });
 
 
-router.post('/postvideo', (req, res, next) => {
-  if (isProductionServerless) {
-    req.flash(
-      "error",
-      "Video uploads are not supported on serverless hosting (Vercel/Netlify) because there is no persistent file storage. Run the app locally or deploy to Render or Railway for uploads."
-    );
-    return res.redirect('/posts/postvideo');
-  }
-  next();
-}, upload.single('video'), makeThumbnail, async (req, res) => {
+router.post('/postvideo', upload.single('video'), makeThumbnail, async (req, res) => {
   if (!req.session.user) {
     req.flash("error", "You must be logged in to post.");
     return res.redirect('/users/login');
   }
 
   const { title, description } = req.body;
-  const videoFile = req.file?.filename;
-  const thumbnailPath = req.file?.thumbnail;
+  let thumbnailPath = req.file?.thumbnail;
 
-  if (!videoFile || !thumbnailPath) {
+  if (!req.file || !thumbnailPath) {
     req.flash("error", "Video or thumbnail upload failed.");
     return res.redirect('/posts/postvideo');
   }
 
   try {
+    const videoRef = await persistVideo(req.file);
+    thumbnailPath = await persistThumbnail(thumbnailPath);
+
     await db.query(
       `INSERT INTO post (user_id, title, description, content, thumbnail) VALUES (?, ?, ?, ?, ?)`,
-      [req.session.user.id, title, description, videoFile, thumbnailPath]
+      [req.session.user.id, title, description, videoRef, thumbnailPath]
     );
 
     req.flash("success", "Video posted successfully!");
     return res.redirect('/');
   } catch (err) {
-    console.error("DB Insert Error:", err.message);
-    req.flash("error", "Something went wrong while saving your post.");
+    console.error("Upload error:", err.message);
+    req.flash("error", err.message || "Something went wrong while saving your post.");
     return res.redirect('/posts/postvideo');
   }
 });
