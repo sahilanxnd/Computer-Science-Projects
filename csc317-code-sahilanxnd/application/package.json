@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "builddb": "node ./bin/dbloader",
-    "grade": "npm i && node ./bin/dbloader  && nodemon ./bin/www"
+    "grade": "npm i && node ./bin/dbloader  && nodemon ./bin/www",
+    "build": "echo \"Netlify builds Express as serverless functions\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -24,7 +25,8 @@
     "morgan": "~1.9.1",
     "multer": "^2.0.2",
     "mysql2": "^2.3.2",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.9"

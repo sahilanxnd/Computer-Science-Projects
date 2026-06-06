@@ -1,0 +1,29 @@
+# Netlify settings for the CSC317 video app (Express + MySQL)
+# Base directory contains package.json and the Express app source.
+[build]
+  base = "csc317-code-sahilanxnd/application"
+  command = "npm install"
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["express", "bcrypt", "ffmpeg-static", "mysql2"]
+  included_files = ["views/**", "public/**"]
+
+[functions.server]
+  # Thumbnail generation can be slow; increase if uploads fail with a timeout.
+  timeout = 26
+
+# Serve committed static assets (CSS, JS, favicon) from the publish directory.
+[[redirects]]
+  from = "/public/*"
+  to = "/:splat"
+  status = 200
+
+# Route all dynamic Express pages and API requests through the serverless function.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+  force = true

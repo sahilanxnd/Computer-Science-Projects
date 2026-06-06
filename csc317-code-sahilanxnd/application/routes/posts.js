@@ -4,11 +4,12 @@ const db = require('../conf/database');
 const multer = require('multer');
 const path = require('path');
 const { makeThumbnail } = require('../middleware/thumbnail');
+const { isProductionServerless, videoDir } = require('../conf/paths');
 
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/videos');
+    cb(null, videoDir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -31,7 +32,16 @@ router.get('/postvideo', (req, res) => {
 });
 
 
-router.post('/postvideo', upload.single('video'), makeThumbnail, async (req, res) => {
+router.post('/postvideo', (req, res, next) => {
+  if (isProductionServerless) {
+    req.flash(
+      "error",
+      "Video uploads are not supported on Netlify because serverless functions do not have persistent file storage. Run the app locally or deploy to a platform with a persistent disk (for example Render or Railway) for uploads."
+    );
+    return res.redirect('/posts/postvideo');
+  }
+  next();
+}, upload.single('video'), makeThumbnail, async (req, res) => {
   if (!req.session.user) {
     req.flash("error", "You must be logged in to post.");
     return res.redirect('/users/login');

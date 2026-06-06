@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const createError = require("http-errors");
 const express = require("express");
 const favicon = require('serve-favicon');
@@ -13,6 +15,8 @@ const MySQLStore = require('express-mysql-session')(session);
 const flash = require('express-flash')
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 app.engine(
   "hbs",
@@ -56,8 +60,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    httpsOnly: true,
-    secure: false
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax"
   }
 }));
 
