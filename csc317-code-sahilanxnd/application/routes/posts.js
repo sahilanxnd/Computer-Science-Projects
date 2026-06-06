@@ -36,7 +36,7 @@ router.post('/postvideo', (req, res, next) => {
   if (isProductionServerless) {
     req.flash(
       "error",
-      "Video uploads are not supported on Netlify because serverless functions do not have persistent file storage. Run the app locally or deploy to a platform with a persistent disk (for example Render or Railway) for uploads."
+      "Video uploads are not supported on serverless hosting (Vercel/Netlify) because there is no persistent file storage. Run the app locally or deploy to Render or Railway for uploads."
     );
     return res.redirect('/posts/postvideo');
   }

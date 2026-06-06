@@ -1,9 +1,16 @@
 const path = require("path");
 const fs = require("fs");
 
-// True only in deployed Netlify Functions (not during `netlify dev`).
+const isLocalDev = Boolean(
+  process.env.NETLIFY_DEV || process.env.VERCEL_ENV === "development"
+);
+
+// Deployed serverless (Vercel or Netlify), not local npm start / vercel dev.
 const isProductionServerless = Boolean(
-  process.env.AWS_LAMBDA_FUNCTION_NAME && !process.env.NETLIFY_DEV
+  !isLocalDev &&
+    (process.env.VERCEL === "1" ||
+      process.env.NETLIFY === "true" ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME)
 );
 
 const appRoot = path.join(__dirname, "..");

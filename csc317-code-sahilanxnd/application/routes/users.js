@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { doesUsernameExist, doesEmailExist, validatePassword, validateUsername, validateEmail } = require('../middleware/validate');
 const db = require('../conf/database');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 router.get('/registration', function (req, res, next) {
   res.render('registration', {

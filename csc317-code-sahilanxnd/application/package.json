@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "builddb": "node ./bin/dbloader",
     "grade": "npm i && node ./bin/dbloader  && nodemon ./bin/www",
-    "build": "echo \"Netlify builds Express as serverless functions\""
+    "build": "echo \"No build step — Express runs as a serverless function\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
