@@ -2,6 +2,7 @@ require('dotenv').config();
 "use strict";
 
 const mysql = require("mysql2/promise");
+const { getDbConfig, env } = require("../conf/db-config");
 
 function displayWarningMessage(warning) {
   switch (warning.Code) {
@@ -15,17 +16,14 @@ function displayWarningMessage(warning) {
 }
 
 async function getConnection() {
-  return await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    multipleStatements: true
-  });
+  return await mysql.createConnection(
+    getDbConfig({ database: undefined, multipleStatements: true })
+  );
 }
 
 async function makeDatabase(connection) {
   const [result] = await connection.query(
-    `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`
+    `CREATE DATABASE IF NOT EXISTS ${env("DB_NAME")};`
   );
   if (result.warningStatus > 0) {
     const [warnings] = await connection.query("SHOW WARNINGS");
@@ -137,7 +135,7 @@ async function makeSessionsTable(connection) {
   try {
     connection = await getConnection();
     await makeDatabase(connection);
-    await connection.query(`USE ${process.env.DB_NAME};`);
+    await connection.query(`USE ${env("DB_NAME")};`);
     await makeUsersTable(connection);
     await makePostsTable(connection);
     await makeCommentsTable(connection);

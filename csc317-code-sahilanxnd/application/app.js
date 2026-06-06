@@ -12,7 +12,8 @@ const usersRouter = require("./routes/users");
 const postRouter = require('./routes/posts');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const flash = require('express-flash')
+const flash = require('express-flash');
+const { getDbConfig } = require('./conf/db-config');
 
 const app = express();
 
@@ -29,16 +30,7 @@ app.engine(
   })
 );
 
-const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+const sessionStore = new MySQLStore(getDbConfig());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
