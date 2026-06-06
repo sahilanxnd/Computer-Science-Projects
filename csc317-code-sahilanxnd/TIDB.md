@@ -103,7 +103,8 @@ After TiDB works, delete or power off the Aiven service to avoid charges.
 | Error | Fix |
 |-------|-----|
 | `ENOTFOUND` | Wrong `DB_HOST` — copy again from TiDB Connect dialog |
-| `TLS` / SSL error | Set `TIDB_ENABLE_SSL=true` |
+| `TLS` / SSL error | Set `TIDB_ENABLE_SSL=true` on Vercel |
+| `Connections using insecure transport are prohibited` | Ensure latest `app.js` is deployed (session store must use a TLS-enabled mysql pool) |
 | `Access denied` | Reset password in TiDB console, update `.env` + Vercel |
 | `ER_BAD_DB_ERROR` | Run `npm run builddb` or set `DB_NAME=test` |
 

@@ -11,6 +11,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const postRouter = require('./routes/posts');
 const session = require('express-session');
+const mysql = require('mysql2/promise');
 const MySQLStore = require('express-mysql-session')(session);
 const flash = require('express-flash');
 const { getDbConfig } = require('./conf/db-config');
@@ -30,7 +31,9 @@ app.engine(
   })
 );
 
-const sessionStore = new MySQLStore(getDbConfig());
+// express-mysql-session strips `ssl` from options, so pass a pool with TLS already configured.
+const sessionPool = mysql.createPool(getDbConfig());
+const sessionStore = new MySQLStore({}, sessionPool);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
