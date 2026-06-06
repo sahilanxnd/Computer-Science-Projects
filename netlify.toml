@@ -6,6 +6,13 @@
   publish = "public"
   functions = "netlify/functions"
 
+  # PORT is only used for local `npm start` (default 3000). Netlify Functions
+  # do not use it, but if PORT is set in the Netlify UI the secrets scanner
+  # flags "3000" across node_modules and video binaries as a false positive.
+  [build.environment]
+    SECRETS_SCAN_OMIT_KEYS = "PORT"
+    SECRETS_SCAN_OMIT_PATHS = "node_modules/**,public/videos/**"
+
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["express", "bcrypt", "ffmpeg-static", "mysql2"]

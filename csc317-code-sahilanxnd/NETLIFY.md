@@ -43,6 +43,8 @@ In **Site configuration → Environment variables**, add:
 | `DB_PORT`     | 3306                 |
 | `NODE_ENV`    | production           |
 
+Do **not** add `PORT` — Netlify Functions ignore it, and setting it (e.g. to `3000`) triggers a false-positive secrets scan failure.
+
 Netlify sets `NETLIFY=true` automatically during builds and function runs.
 
 ### 3. Deploy
@@ -77,6 +79,7 @@ Run this from the **repository root** so Netlify picks up the root `netlify.toml
 
 | Issue | Fix |
 |-------|-----|
+| Build fails: secrets scanning found `PORT` | Remove `PORT` from **Environment variables** in the Netlify UI, then redeploy. `netlify.toml` already omits `PORT` from the scanner. |
 | 500 errors on every page | Check function logs in Netlify → **Functions** → **server**. Usually missing or wrong `DB_*` variables. |
 | Login session not sticking | Ensure `NODE_ENV=production` so cookies use `secure: true` over HTTPS. |
 | CSS/JS 404 | Confirm `publish = "public"` and that `/public/*` redirects exist in `netlify.toml`. |
