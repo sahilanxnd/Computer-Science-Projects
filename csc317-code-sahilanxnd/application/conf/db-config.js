@@ -5,32 +5,40 @@ function env(name, fallback) {
   if (value === undefined || value === "") {
     return fallback;
   }
-  return value.trim();
+  return value.trim().replace(/^['"]|['"]$/g, "");
+}
+
+function isTrue(name) {
+  return env(name, "").toLowerCase() === "true";
 }
 
 function isTiDB() {
-  const host = env("DB_HOST", "");
+  const host = env("DB_HOST", "").toLowerCase();
+  const port = env("DB_PORT", "");
+
   return (
     host.includes("tidbcloud.com") ||
-    env("TIDB_ENABLE_SSL", "") === "true"
+    isTrue("TIDB_ENABLE_SSL") ||
+    port === "4000"
   );
 }
 
 function getSslConfig() {
-  if (env("DB_SSL", "true") === "false") {
-    return undefined;
-  }
-
+  // TiDB Cloud public endpoints always require TLS.
   if (isTiDB()) {
     const ssl = {
       minVersion: "TLSv1.2",
-      rejectUnauthorized: env("DB_SSL_REJECT_UNAUTHORIZED", "true") !== "false",
+      rejectUnauthorized: true,
     };
     const caPath = env("DB_CA_PATH", "");
     if (caPath) {
       ssl.ca = fs.readFileSync(caPath);
     }
     return ssl;
+  }
+
+  if (env("DB_SSL", "true") === "false") {
+    return undefined;
   }
 
   return { rejectUnauthorized: false };
