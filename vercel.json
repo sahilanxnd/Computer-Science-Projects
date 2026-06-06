@@ -1,0 +1,16 @@
+{
+  "installCommand": "cd csc317-code-sahilanxnd/application && npm install",
+  "buildCommand": "cd csc317-code-sahilanxnd/application && npm run build",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "csc317-code-sahilanxnd/application/{views,public}/**",
+      "maxDuration": 60
+    }
+  }
+}

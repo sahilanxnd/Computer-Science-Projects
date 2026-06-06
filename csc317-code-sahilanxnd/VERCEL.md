@@ -23,14 +23,22 @@ This app already includes a Vercel setup (`vercel.json` + `api/index.js`). Verce
 ### 1. Import the project
 
 1. Go to [vercel.com/new](https://vercel.com/new).
-2. Import your GitHub repository.
-3. Set **Root Directory** to:
-   ```
-   csc317-code-sahilanxnd/application
-   ```
-4. Framework Preset: **Other** (no framework auto-detected).
-5. Build Command: leave empty or use `npm install`.
-6. Output Directory: leave empty (Express handles responses).
+2. Import your GitHub repository (`Computer-Science-Projects`).
+
+**Option A — deploy from repo root (recommended, works out of the box):**
+
+- Leave **Root Directory** empty (repo root).
+- The root `vercel.json` and `api/index.js` route all traffic to the Express app.
+
+**Option B — deploy from the app folder:**
+
+- Set **Root Directory** to `csc317-code-sahilanxnd/application`.
+- Uses `application/vercel.json` and `application/api/index.js`.
+
+For both options:
+
+3. Framework Preset: **Other**.
+4. Output Directory: leave **empty** (do not set `public`).
 
 ### 2. Environment variables
 
@@ -75,7 +83,7 @@ vercel dev
 
 | Issue | Fix |
 |-------|-----|
-| 404 on all routes | Confirm **Root Directory** is `csc317-code-sahilanxnd/application`. |
+| `404: NOT_FOUND` on every page | Vercel has no matching route. Leave **Root Directory** empty (repo root) *or* set it to `csc317-code-sahilanxnd/application` — not both configs. Clear **Output Directory** if it is set to `public`. Redeploy after pushing the latest `vercel.json`. |
 | 500 / FUNCTION_INVOCATION_FAILED | Check **Logs** in Vercel dashboard. Usually wrong `DB_*` values or DB not reachable from the internet. |
 | Login session not sticking | Set `NODE_ENV=production` so cookies use `secure: true` over HTTPS. |
 | Registration/login errors | Ensure the remote DB has the `user` table and SSL is allowed (the app uses `rejectUnauthorized: false` for MySQL SSL). |
