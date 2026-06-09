@@ -31,9 +31,8 @@ A full-stack web application inspired by YouTube where users can upload and inte
 - Handlebars
 - HTML/CSS/JavaScript
 
-### Project Folder
-`csc317-code-sahilanxnd`
-
+### Project Link
+https://computer-science-projects-two.vercel.app/
 
 # Contact
 
